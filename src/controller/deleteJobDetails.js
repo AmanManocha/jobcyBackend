@@ -3,8 +3,10 @@ const JobDetails = require('../model/jobDetails');
 
 const deleteJobDetails = async (req, res) => {
     try {
-        const jobId = req.params.id; // Get the job details ID from the request parameters
+        const jobId = req.query.jobId; // Get the job details ID from the request parameters
+        console.log('jobId', jobId)
         const userId = req.user.userId;
+
 
         // Check if the user ID is valid
         const user = await Users.findById(userId);
@@ -13,7 +15,8 @@ const deleteJobDetails = async (req, res) => {
         }
 
         // Check if the job details exist
-        const job = await JobDetails.findOne(jobId);
+        const job = await JobDetails.findOne( {_id: jobId} );
+        console.log('job', job)
         if (!job) {
             return res.status(404).json({ message: 'Job details not found' });
         }
@@ -24,7 +27,7 @@ const deleteJobDetails = async (req, res) => {
         }
 
         // Delete the job details
-        await JobDetails.deleteOne(jobId);
+        await JobDetails.deleteOne({_id: jobId} );
         res.status(200).json({ message: 'Job details deleted successfully.' });
 
     } catch (error) {
